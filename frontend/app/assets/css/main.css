@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 44 211 150;
+    --color-primary-hover: 22 163 74;
+    --color-primary-light: 236 253 245;
+
+    --color-secondary: 99 102 241;
+    --color-secondary-hover: 79 70 229;
+    --color-secondary-light: 238 242 255;
+
+    --color-accent: 245 158 11;
+    --color-accent-hover: 217 119 6;
+    --color-accent-light: 254 243 199;
+
+    --color-sidebar-bg: 45 58 82;
+    --color-sidebar-text: 255 255 255;
+    --color-sidebar-muted: 148 163 184;
+
+    --color-app-bg: 244 246 250;
+    --color-surface: 255 255 255;
+
+    --color-text-main: 30 41 59;
+    --color-text-muted: 100 116 139;
+
+    --color-border: 241 245 249;
+  }
+}
+
+@layer utilities {
+  /* Headings */
+  .text-h1 { @apply text-4xl md:text-5xl font-bold tracking-tight leading-none text-content-main; }
+  .text-h2 { @apply text-3xl md:text-4xl font-bold tracking-tight leading-tight text-content-main; }
+  .text-h3 { @apply text-2xl md:text-3xl font-semibold tracking-tight leading-snug text-content-main; }
+  .text-h4 { @apply text-xl md:text-2xl font-semibold leading-snug text-content-main; }
+  .text-h5 { @apply text-lg md:text-xl font-medium leading-normal text-content-main; }
+  .text-h6 { @apply text-base md:text-lg font-medium leading-normal text-content-main; }
+
+  /* Subtitles */
+  .text-subtitle-1 { @apply text-base font-medium leading-relaxed tracking-wide text-content-main; }
+  .text-subtitle-2 { @apply text-sm font-medium leading-normal tracking-wide text-content-muted; }
+
+  /* Body Text */
+  .text-body-1 { @apply text-base leading-relaxed text-content-main; }
+  .text-body-2 { @apply text-sm leading-normal text-content-main; }
+
+  /* Captions & Overlines */
+  .text-caption { @apply text-xs font-normal leading-normal text-content-muted; }
+  .text-overline { @apply text-[10px] font-bold uppercase tracking-widest text-content-muted; }
+
+  /* Additional Recommended Utilities */
+  .text-lead { @apply text-lg md:text-xl font-light leading-relaxed; }
+  .text-badge { @apply text-[11px] font-semibold tracking-tight leading-none; }
+  .text-button { @apply text-sm font-semibold tracking-wide uppercase; }
+  .text-code { @apply font-mono text-xs px-1.5 py-0.5 rounded bg-app-bg text-primary border border-border-subtle; }
+}

@@ -1,0 +1,90 @@
+# ==========================================
+# Root & System / OS Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
+
+# Environment Configuration (Security - NEVER COMMIT)
+.env
+.env.*
+!.env.example
+!.env.testing
+
+# Docker local data volumes (if mapped to host)
+docker/data/
+docker/mysql/
+docker/redis/
+
+# ==========================================
+# Frontend (Nuxt 3 / Node.js)
+# ==========================================
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+frontend/.nitro/
+frontend/.cache/
+frontend/dist/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
+
+# Nuxt auto-generated & temporary files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+frontend/stats.json
+
+# ==========================================
+# Backend (Laravel 12 / PHP)
+# ==========================================
+backend/vendor/
+backend/node_modules/
+backend/public/storage
+backend/public/hot
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+!backend/storage/.gitkeep
+!backend/storage/app/.gitkeep
+!backend/storage/app/public/.gitkeep
+!backend/storage/framework/.gitkeep
+!backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/cache/data/.gitkeep
+!backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/testing/.gitkeep
+!backend/storage/framework/views/.gitkeep
+!backend/storage/logs/.gitkeep
+
+# Laravel build artifacts & logs
+backend/.env
+backend/.env.*
+!backend/.env.example
+!backend/.env.testing
+backend/Homestead.json
+backend/Homestead.yaml
+backend/npm-debug.log
+backend/yarn-error.log
+backend/.phpunit.result.cache

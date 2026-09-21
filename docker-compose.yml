@@ -1,0 +1,134 @@
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Laravel Backend Service
+  # ---------------------------------------------------------------------------
+  laravel.test:
+    build:
+      context: ./backend
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP:-1000}'
+    image: saas-laravel-app
+    container_name: laravel-app
+    restart: unless-stopped
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+    volumes:
+      - './backend:/var/www/html'
+    networks:
+      - saas-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-backend-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - laravel.test
+    networks:
+      - saas-network
+  # ---------------------------------------------------------------------------
+  # 2. Nuxt 3 SPA Frontend Service (Dev Mode with HMR)
+  # ---------------------------------------------------------------------------
+  nuxt:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/nuxt/Dockerfile
+      target: development
+    ports:
+      - '${NUXT_PORT:-3000}:3000'
+    volumes:
+      - './frontend:/app'
+      - '/app/node_modules'
+      - '/app/.nuxt'
+    environment:
+      NODE_ENV: development
+      NUXT_PUBLIC_API_BASE: 'http://localhost:8000/api/v1'
+      HOST: '0.0.0.0'
+      PORT: '3000'
+    networks:
+      - saas-network
+    depends_on:
+      - laravel.test
+  # ---------------------------------------------------------------------------
+  # 3. MySQL Database (AWS RDS-Ready Engine)
+  # ---------------------------------------------------------------------------
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE:-saas_db}'
+      MYSQL_USER: '${DB_USERNAME:-saas_user}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - 'saas-mysql:/var/lib/mysql'
+    networks:
+      - saas-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-secret}"]
+      retries: 3
+      timeout: 5s
+  # ---------------------------------------------------------------------------
+  # 4. Redis Cache & Queue Manager
+  # ---------------------------------------------------------------------------
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'saas-redis:/data'
+    networks:
+      - saas-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
+  # ---------------------------------------------------------------------------
+  # 5. Laravel Queue Worker
+  # ---------------------------------------------------------------------------
+  queue-worker:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+    container_name: laravel_queue_worker
+    restart: unless-stopped
+    volumes:
+      - './backend:/var/www/html'
+    networks:
+      - saas-network
+    depends_on:
+      - laravel.test
+      - redis
+      - mysql
+  # ---------------------------------------------------------------------------
+  # 6. Mailpit (Local Email Testing)
+  # ---------------------------------------------------------------------------
+  mailpit:
+    image: 'axllent/mailpit:latest'
+    ports:
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - saas-network
+
+networks:
+  saas-network:
+    driver: bridge
+
+volumes:
+  saas-mysql:
+    driver: local
+  saas-redis:
+    driver: local
