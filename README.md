@@ -87,6 +87,9 @@ docker compose up -d --build
 ### 4. Initialize Database & Generate Application Keys
 
 ```bash
+# composer install
+docker compose exec laravel.test composer install
+
 # Generate Laravel Application Key
 docker compose exec laravel.test php artisan key:generate
 
