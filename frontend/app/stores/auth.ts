@@ -45,6 +45,24 @@ export const useAuthStore = defineStore('auth', () => {
     setAuth(response.data.user, response.data.token)
   }
 
+  async function loginClient(payload: { phone: string; device_name?: string }) {
+    const api = useApi()
+
+    // Posts to POST /api/v1/auth/client/login
+    const response = await api<{
+      data: {
+        user: User
+        token: string
+        token_type: string
+      }
+    }>('/auth/client/login', {
+      method: 'POST',
+      body: payload,
+    })
+
+    setAuth(response.data.user, response.data.token)
+  }
+
   return {
     token,
     user,
@@ -53,5 +71,6 @@ export const useAuthStore = defineStore('auth', () => {
     setAuth,
     clearAuth,
     login,
+    loginClient,
   }
 })

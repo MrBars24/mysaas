@@ -5,7 +5,7 @@ services:
   laravel.test:
     build:
       context: ./backend
-      dockerfile: ./docker/php/Dockerfile
+      dockerfile: ../docker/php/Dockerfile
       args:
         WWWGROUP: '${WWWGROUP:-1000}'
     image: saas-laravel-app
