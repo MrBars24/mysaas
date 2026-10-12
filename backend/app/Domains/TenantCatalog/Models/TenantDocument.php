@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Domains\TenantCatalog\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class TenantDocument extends Model
+{
+    protected $connection = 'tenant_catalog';
+
+    protected $guarded = ['id'];
+
+    protected function casts(): array
+    {
+        return [
+            'reviewed_at' => 'datetime',
+        ];
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    // public function reviewer()
+    // {
+    //     return $this->belongsTo(User::class, 'reviewed_by_user_id');
+    // }
+}
